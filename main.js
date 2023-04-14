@@ -1,32 +1,61 @@
-// const apiKey = '95efbeb02d5f499e805183236231404'
+ const apiKey = '95efbeb02d5f499e805183236231404';
+     
+ 
 
-// const query = `http://api.weatherapi.com/v1/current.json?key=${apiKey}=Germany`;
+ 
+ const header = document.querySelector('.header');
+ const form = document.querySelector('form');
+ const input = document.querySelector('#inputCity');
+ 
 
+ form.onsubmit = function (e) {
+    e.preventDefault();  
+   let city = input.value.trim();
 
-// fetch(query).then((response)  {
-   // return response.json()
-
-//}).then((data) {
-
-//console.log(data);
-//})
-
-
-/*Получаем названи города */
-
-
-const form = document.querySelector('#form');
-const input = document.querySelector('#inputCity');
-let city;
+    const url = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}`;
 
 
-// Слушаем отправку формы
- form.onsubmit = function (e)  {
-    //Отменяем отправку формы
-    e.preventDefault();
+    fetch(url).then((response) =>{
+      return response.json()
+    
+     }).then((data) =>{
+      console.log(data);
 
-    // 
-     citu = input.value.trim();
-     console.log(city)
+      if (data.error) {
+        const prevCard = document.querySelector('.card');
+        if (prevCard) prevCard.remove();
+        const html = `<div class="card">${data.error.message}</div>`
 
- }
+        header.insertAdjacentHTML('afterend', html);
+
+      } else {
+        const prevCard = document.querySelector('.card');
+        if (prevCard) prevCard.remove();
+
+
+         const html = `<div class="card">
+
+
+         <h2 class="card-city">${data.location.name}</h2>
+           
+         <div class="card-weather">
+          <div class="card-value">${data.current.temp_c}<sup>°C</sup></div>
+          <img  class="card-img" src="./img/cloud.png" alt="Weather">
+         </div>
+        
+         <div class="card-description">${data.current.condition.text}</div>
+  
+          </div>`
+
+
+          header.insertAdjacentHTML('afterend', html);
+
+      }
+      
+        
+
+        
+     })
+    
+    
+}
